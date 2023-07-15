@@ -44,5 +44,6 @@ class TicketRepository:
         return Ticket.Objects.all()
 
     @staticmethod
-    def get_available_tickets_by_route(route_id):
+    def get_available_tickets_by_route(query_params):
+        route_id = query_params['route_id']
         return Ticket.objects.filter(route=RouteRepository.get(pk=route_id), is_bought=False)

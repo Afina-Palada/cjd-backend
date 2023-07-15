@@ -1,4 +1,5 @@
 from rest_framework import status
+from rest_framework.generics import ListAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -35,3 +36,8 @@ class TicketViewSet(ModelViewSet):
     serializer_class = TicketSerializer
     queryset = TicketRepository.get_queryset()
     permission_classes = [AllowAny]
+
+
+class AvailableTicketsListAPIView(ListAPIView):
+    def list(self, request, *args, **kwargs):
+        return TicketRepository.get_available_tickets_by_route(self.request.query_params)
