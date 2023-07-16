@@ -2,9 +2,11 @@ from rest_framework import status
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from .repository import *
 from .serializers import *
+from .tasks import get_routes_and_tickets_from_api
 
 # Create your views here.
 
@@ -28,7 +30,7 @@ class RouteViewSet(ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         queryset = RouteRepository.get_queryset()
-        serializer = GetRouteSerializer(queryset, many=True)
+        serializer = GetRouteSerializer(instance=queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -38,6 +40,8 @@ class TicketViewSet(ModelViewSet):
     permission_classes = [AllowAny]
 
 
-class AvailableTicketsListAPIView(ListAPIView):
-    def list(self, request, *args, **kwargs):
-        return TicketRepository.get_available_tickets_by_route(self.request.query_params)
+class GetTicketsAPIView(APIView):
+
+    def post(self, request):
+        get_routes_and_tickets_from_api.apply_async((request.data['origin'], request.data['destination']),)
+        return Response(status=status.HTTP_200_OK)

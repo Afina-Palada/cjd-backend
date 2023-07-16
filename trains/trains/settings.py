@@ -83,11 +83,21 @@ WSGI_APPLICATION = 'trains.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'db',
+        'USER': 'my_user',
+        'PASSWORD': 'mysecretpassword',
+        'HOST': 'db',
+        'PORT': '5432'
     }
 }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -123,7 +133,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'static'
 
 MEDIA_URL = '/media/'
@@ -135,7 +145,11 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 DATE_FORMAT = "%Y-%m-%dT%H:%M:%S"
-TRAINS_ANALYTIC_SERVICE_URL = ''
+
+# services urls
+TRAINS_ANALYTIC_SERVICE_URL = 'http://95.163.241.37/click'
+# TRAINS_ANALYTIC_SERVICE_URL = 'http://localhost/click'
+TRAINS_SURGE_SERVICE_URL = 'http://89.108.76.66/coefficient'
 BASE_TICKETS_API = 'https://ticket.rzd.ru/apib2b/p/Railway/V1/Search/TrainPricing'
 
 # celery and redis

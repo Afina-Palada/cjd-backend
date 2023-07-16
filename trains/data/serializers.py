@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from .models import Route, Station, Ticket, Train
+from .repository import RouteRepository, StationRepository
 
 
 class TrainSerializer(serializers.ModelSerializer):
@@ -18,8 +19,8 @@ class StationSerializer(serializers.ModelSerializer):
 
 
 class RouteSerializer(serializers.ModelSerializer):
-    origin_station = serializers.PrimaryKeyRelatedField()
-    destination_station = serializers.PrimaryKeyRelatedField()
+    origin_station = serializers.PrimaryKeyRelatedField(queryset=StationRepository.get_queryset())
+    destination_station = serializers.PrimaryKeyRelatedField(queryset=StationRepository.get_queryset())
     train = serializers.StringRelatedField()
 
     class Meta:
@@ -28,11 +29,11 @@ class RouteSerializer(serializers.ModelSerializer):
 
 
 class TicketSerializer(serializers.ModelSerializer):
-    route = serializers.PrimaryKeyRelatedField()
+    route = serializers.PrimaryKeyRelatedField(queryset=RouteRepository.get_queryset())
 
     class Meta:
         model = Ticket
-        fields = ('route', 'service_class', 'service_price', 'finally_price', 'is_bought')
+        fields = ('route', 'service_class', 'service_price', 'finally_price', 'ml_price', 'count_of_bought')
 
 
 class GetRouteSerializer(serializers.ModelSerializer):
@@ -43,4 +44,4 @@ class GetRouteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Route
-        fields = ('origin_station', 'destination_station', 'train', 'departure_datetime', 'arrival_datetime')
+        fields = ('pk', 'origin_station', 'destination_station', 'train', 'departure_datetime', 'arrival_datetime', 'tickets')

@@ -4,7 +4,7 @@ from django.db import models
 
 
 class Train(models.Model):
-    name = models.CharField(max_length=8)
+    name = models.CharField(max_length=8, primary_key=True)
     is_branded = models.BooleanField(default=False)
 
     def __str__(self):
@@ -17,8 +17,8 @@ class Station(models.Model):
 
 
 class Route(models.Model):
-    origin_station = models.ForeignKey(Station, on_delete=models.CASCADE)
-    destination_station = models.ForeignKey(Station, on_delete=models.CASCADE)
+    origin_station = models.ForeignKey(Station, on_delete=models.CASCADE, related_name='origin_station')
+    destination_station = models.ForeignKey(Station, on_delete=models.CASCADE, related_name='destination_station')
     departure_datetime = models.DateTimeField()
     arrival_datetime = models.DateTimeField()
     train = models.ForeignKey(Train, on_delete=models.SET_NULL, null=True)
@@ -29,4 +29,5 @@ class Ticket(models.Model):
     service_class = models.CharField(max_length=8)
     service_price = models.FloatField()
     finally_price = models.FloatField()
-    bought = models.BooleanField(default=False)
+    ml_price = models.FloatField()
+    count_of_bought = models.IntegerField()

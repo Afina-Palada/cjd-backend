@@ -8,6 +8,18 @@ class TrainRepository:
     def get_queryset():
         return Train.objects.all()
 
+    @staticmethod
+    def get(name):
+        return Train.objects.get(name=name)
+
+    @staticmethod
+    def get_or_create(name, is_branded):
+        train, created = Train.objects.get_or_create(
+            name=name,
+            is_branded=is_branded
+        )
+        return train
+
 
 class StationRepository:
     @staticmethod
@@ -15,8 +27,20 @@ class StationRepository:
         return Station.objects.all()
 
     @staticmethod
+    def get(pk):
+        return Station.objects.get(code=pk)
+
+    @staticmethod
     def get_by_name(name):
         return Station.objects.get(name=name)
+
+    @staticmethod
+    def get_or_create(code, name):
+        station, created = Station.objects.get_or_create(
+            code=code,
+            name=name
+        )
+        return station
 
 
 class RouteRepository:
@@ -37,13 +61,32 @@ class RouteRepository:
             departure_datetime__lt=datetime.strptime(departure_datetime, settings.DATE_FORMAT) + timedelta(days=1)
         )
 
+    @staticmethod
+    def get_or_create(origin_station: Station,
+                      destination_station: Station, departure_datetime, arrival_datetime, train: Train):
+        route, created = Route.objects.get_or_create(
+            origin_station=origin_station,
+            destination_station=destination_station,
+            departure_datetime=departure_datetime,
+            arrival_datetime=arrival_datetime,
+            train=train
+        )
+        return route
+
 
 class TicketRepository:
     @staticmethod
     def get_queryset():
-        return Ticket.Objects.all()
+        return Ticket.objects.all()
 
     @staticmethod
-    def get_available_tickets_by_route(query_params):
-        route_id = query_params['route_id']
-        return Ticket.objects.filter(route=RouteRepository.get(pk=route_id), is_bought=False)
+    def get_or_create(route: Route, service_class, service_price, finally_price, ml_price, count):
+        ticket, created = Ticket.objects.get_or_create(
+            route=route,
+            service_class=service_class,
+            service_price=service_price,
+            finally_price=finally_price,
+            ml_price=ml_price,
+            count_of_bought=count
+        )
+        return ticket
